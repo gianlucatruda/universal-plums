@@ -69,6 +69,75 @@ gui.add(gameParameters, "plumPrice", 0, 100);
 gui.add(gameParameters, "temperature", -10, 30);
 gui.add(gameParameters, "breakfastPrice", 1, 10);
 
+document.addEventListener('pointerdown', onPointerDown, false);
+document.addEventListener('pointermove', onPointerMove, false);
+document.addEventListener('pointerup', onPointerUp, false);
+
+let selectedObject = null;
+
+function onPointerDown(event) {
+  const intersectedObject = getIntersectedObject(event);
+  if (intersectedObject) {
+    selectedObject = intersectedObject.object;
+    controls.enabled = false;
+  } else {
+    addPlumAt(event);
+  }
+}
+
+function onPointerUp(event) {
+  if (selectedObject && intersectsIcebox(selectedObject)) {
+    console.log('Plum added to Icebox!');
+    scene.remove(selectedObject);
+    plums.splice(plums.indexOf(selectedObject), 1);
+  }
+  selectedObject = null;
+  controls.enabled = true;
+}
+
+function onPointerMove(event) {
+  if (selectedObject) {
+    moveSelectedObject(event);
+  }
+}
+
+function getIntersectedObject(event) {
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(plums);
+  return intersects[0] || null;
+}
+
+function intersectsIcebox(object) {
+  const iceboxBox = new THREE.Box3().setFromObject(icebox);
+  const objectBox = new THREE.Box3().setFromObject(object);
+  return iceboxBox.intersectsBox(objectBox);
+}
+
+function moveSelectedObject(event) {
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  const planeZ = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+  const intersectPoint = new THREE.Vector3();
+  raycaster.ray.intersectPlane(planeZ, intersectPoint);
+  selectedObject.position.copy(intersectPoint);
+}
+
+function addPlumAt(event) {
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  const planeZ = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+  const intersectPoint = new THREE.Vector3();
+  raycaster.ray.intersectPlane(planeZ, intersectPoint)
+  const plum = new THREE.Mesh(plumGeometry, plumMaterial);
+  plum.position.copy(intersectPoint);
+  scene.add(plum);
+  plums.push(plum);
+}
+
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate);
