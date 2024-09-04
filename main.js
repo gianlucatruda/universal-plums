@@ -33,8 +33,18 @@ scene.add(sunLight);
 // Plum Geometry
 const plumGeometry = new THREE.SphereGeometry(0.5, 32, 32);
 const plumMaterial = new THREE.MeshBasicMaterial({ color: 0x8e4585 });
-const plum = new THREE.Mesh(plumGeometry, plumMaterial);
-scene.add(plum);
+const plums = [];
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+function addPlum() {
+  const plum = new THREE.Mesh(plumGeometry, plumMaterial);
+  plum.position.set(-5, 0.5, 0);
+  scene.add(plum);
+  plums.push(plum);
+  console.log("Added a plum", len(plums));
+}
+
 
 // Icebox Geometry
 const iceboxGeometry = new THREE.BoxGeometry(5, 5, 5);
@@ -50,6 +60,7 @@ scene.add(icebox);
 // GUI setup
 const gui = new dat.GUI();
 const gameParameters = {
+  plums: 0,
   plumPrice: 1,
   temperature: -2,
   breakfastPrice: 5,
