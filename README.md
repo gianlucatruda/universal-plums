@@ -9,6 +9,8 @@ _This is just to say, you gotta be plum maxxing!_
 A resource-management click-game about plums with ridiculously over-the-top 3D graphics.
 So it's like the fantastic [Universal Paperclips](https://www.decisionproblem.com/paperclips/), except not as good, they're plums, you're not a rogue AI, and your device gets hotter because of WebGL running.
 
+![Demo GIF of game](demo.gif) 
+
 Another Creative Coding special at the Recurse Center. This week's prompt was:
 
     I have eaten
